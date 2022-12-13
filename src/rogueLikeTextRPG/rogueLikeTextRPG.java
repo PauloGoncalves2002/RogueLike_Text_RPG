@@ -1,4 +1,4 @@
-package sandbox;
+package rogueLikeTextRPG;
 
 import java.util.Scanner;
 import java.util.Random;
@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * @author NatsuNight
  */
-public class SandBox {
+public class rogueLikeTextRPG {
 
     /**
      * @param args the command line arguments
