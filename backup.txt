@@ -1,0 +1,110 @@
+import java.util.ArrayList;
+
+// This class represents a single room in the map
+class Room {
+  int x;  // The x-coordinate of the room
+  int y;  // The y-coordinate of the room
+  boolean isVisited;  // Whether or not the room has been visited by the player
+
+  public Room(int x, int y) {
+    this.x = x;
+    this.y = y;
+    this.isVisited = false;
+  }
+}
+
+// This class represents the entire map of rooms
+class Map {
+  int width;  // The width of the map (number of columns)
+  int height;  // The height of the map (number of rows)
+  Room[][] rooms;  // A 2D array of rooms representing the map
+
+  public Map(int width, int height) {
+    this.width = width;
+    this.height = height;
+    this.rooms = new Room[height][width];
+
+    // Initialize each room in the map
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        this.rooms[y][x] = new Room(x, y);
+      }
+    }
+  }
+}
+
+
+print 2d array
+public class Main {
+  public static void main(String[] args) {
+    int[][] array = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+    for (int[] row : array) {
+      for (int item : row) {
+        System.out.print(item + " ");
+      }
+      System.out.println();
+    }
+  }
+}
+
+
+
+// Create a Random object
+Random random = new Random();
+
+// Create a 2D array with 11 rows and 11 columns
+int[][] rooms = new int[11][11];
+
+// Set the value of the middle element (the room) to 1
+rooms[5][5] = 1;
+
+// Loop through the array and set the value of any adjacent elements (rooms) to 1
+for (int i = 0; i < rooms.length; i++) {
+    for (int j = 0; j < rooms[i].length; j++) {
+        if (rooms[i][j] == 1) {
+            // Check if there is a room above, below, to the left, or to the right
+            // and set the value to 1 with a 50% chance if there is
+            if (i > 0 && rooms[i-1][j] != 1 && random.nextBoolean()) {
+                rooms[i-1][j] = 1;
+            }
+            if (i < rooms.length - 1 && rooms[i+1][j] != 1 && random.nextBoolean()) {
+                rooms[i+1][j] = 1;
+            }
+            if (j > 0 && rooms[i][j-1] != 1 && random.nextBoolean()) {
+                rooms[i][j-1] = 1;
+            }
+            if (j < rooms[i].length - 1 && rooms[i][j+1] != 1 && random.nextBoolean()) {
+                rooms[i][j+1] = 1;
+            }
+        }
+    }
+}
+
+inside a 6x6 2d array called map (every space represents a possible room)
+every space has a 25% of being a room
+the midle is allwais a room
+then ensure that every room is connected to at least one
+
+int[][] map = new int[6][6];
+Random rand = new Random();
+
+// Ensure the middle space is always a room
+map[3][3] = 1;
+
+for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+        // Skip the middle space since we already set it to 1
+        if (i == 3 && j == 3) {
+            continue;
+        }
+        
+        // Generate a random number between 0 and 100
+        int randomNum = rand.nextInt(100);
+        
+        // If the random number is less than or equal to 25, set the space to 1 (a room)
+        if (randomNum <= 25) {
+            map[i][j] = 1;
+        }
+    }
+}
