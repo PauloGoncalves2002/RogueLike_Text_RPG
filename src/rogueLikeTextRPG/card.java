@@ -1,4 +1,4 @@
-package sandbox;
+package rogueLikeTextRPG;
 
 public class card {
     
