@@ -34,7 +34,7 @@ public class rogueLikeTextRPG {
             System.out.println("Seed defenida: " + seed);
         }
 
-        //generate msp -----------------------------------------------------------------------------------------
+        //generate map -----------------------------------------------------------------------------------------
         int randomNum;
 
         //set number of rooms
@@ -86,6 +86,16 @@ public class rogueLikeTextRPG {
             }
         }
 
+        //generate enemies
+        for (int y = 0; y < mapSize; y++) {
+            for (int x = 0; x < mapSize; x++) {
+                if (map[y][x] == 'e') {
+                    String enemyName = "enemy" + y + "." + x;
+                    Entity enemy = new Entity("enemy", enemyName, 0, 1, x, y);
+                }
+            }
+        }
+
         //find boss and set boss
         for (int y = 0; y < mapSize; y++) {
             for (int x = 0; x < mapSize; x++) {
@@ -112,9 +122,29 @@ public class rogueLikeTextRPG {
         do {
 
             //add current location to mapV
-            if (mapV[player.getY()][player.getX()] == '?') {
-                mapV[player.getY()][player.getX()] = map[player.getY()][player.getX()];
+            
+            mapV[player.getY()][player.getX()] = 'o';
                 
+            //adicionar lados visiveis
+            if (player.getY() != mapSize-1) { //if down exists
+                if (mapV[player.getY()+1][player.getX()] == '?' || mapV[player.getY()+1][player.getX()] == 'o') {
+                    mapV[player.getY()+1][player.getX()] = map[player.getY()+1][player.getX()];
+                }   
+            }
+            if (player.getY() != 0) { //if up exists
+                if (mapV[player.getY()-1][player.getX()] == '?' || mapV[player.getY()-1][player.getX()] == 'o') {
+                    mapV[player.getY()-1][player.getX()] = map[player.getY()-1][player.getX()];
+                }
+            }
+            if (player.getX() != mapSize-1) { //if right exists
+                if (mapV[player.getY()][player.getX()+1] == '?' || mapV[player.getY()][player.getX()+1] == 'o') {
+                    mapV[player.getY()][player.getX()+1] = map[player.getY()][player.getX()+1];
+                }
+            }
+            if (player.getX() != 0) { //if left exists
+                if (mapV[player.getY()][player.getX()-1] == '?' || mapV[player.getY()][player.getX()-1] == 'o') {
+                    mapV[player.getY()][player.getX()-1] = map[player.getY()][player.getX()-1];
+                }
             }
 
             turnIsValid = true;
@@ -130,37 +160,73 @@ public class rogueLikeTextRPG {
             }
             //print stats
             System.out.println(" ");
+            System.out.println("STATISTICAS");
             System.out.print("Nome: "+ player.getName());
             System.out.print(" | Vida: "+ player.getLife());
             System.out.print(" | Poder: "+ player.getPower());
             System.out.println(" | Turno: "+ turn);
             //print controlls
+            System.out.println("COMANDOS");
             System.out.print("wasd: movimentação");
             System.out.print(" | q: evoluir poder");
             System.out.print(" | e: bloquear");
             System.out.print(" | r: atacar");
             System.out.print(" | f: poções");
-            System.out.print(" | p: menu");
+            System.out.println(" | p: menu");
+            //print legend
+            System.out.println("LEGENDA");
+            System.out.print("o: tu estas aqui");
+            System.out.print(" | s: inicio");
+            System.out.print(" | b: boss");
+            System.out.print(" | e: enimigo");
+            System.out.print(" | c: bau");
             System.out.println(" ");
 
             //gameplay -------------------------------------------
             action = keyboard.next().charAt(0);
-
+            System.out.println(" ");
+            
             switch (action) {
                 case 'w':
-                    //if (map[player.getY()-1][player.getX()] !=) { //if up exists
+                    if (player.getY() != 0) { //if up exists
                         player.setY(player.getY()-1);
-                        System.out.println(map[player.getY()+1][player.getX()]);
-                    //}
+                        System.out.println("Moveste-te para cima!");
+                        
+                    } else {
+                        turnIsValid = false;
+                        System.out.println("Não foi possivel mover para cima!");
+                    }
                     break;
                 case 'a':
+                    if (player.getX() != 0) { //if left exists
+                        player.setX(player.getX()-1);
+                        System.out.println("Moveste-te para a esquerda!");
+
+                    } else {
+                        turnIsValid = false;
+                        System.out.println("Não foi possivel mover para a esquerda!");
+                    }
                 
                     break;
                 case 's':
-                    
+                    if (player.getY() != mapSize-1) { //if down exists
+                        player.setY(player.getY()+1);
+                        System.out.println("Moveste-te para baixo!");
+
+                    } else {
+                        turnIsValid = false;
+                        System.out.println("Não foi possivel mover para baixo!");
+                    }
                     break;
                 case 'd':
-                
+                    if (player.getX() != mapSize-1) { //if right exists
+                        player.setX(player.getX()+1);
+                        System.out.println("Moveste-te para a direita!");
+
+                    } else {
+                        turnIsValid = false;
+                        System.out.println("Não foi possivel mover para a direita!");
+                    }
                     break;
                 case 'q':
                 player.setPower(player.getPower()+1);
@@ -182,13 +248,12 @@ public class rogueLikeTextRPG {
             
                 default:
                 turnIsValid= false;
-                System.out.println(" ");
                 System.out.println("Introduz um comando valido!");
-                System.out.println(" ");
                     break;
             }
 
             if (turnIsValid) turn++;
+            System.out.println(" ");
 
         } while (true==true); //todo : boss life != 0 or player life != 0 ?????????????????????????
 
