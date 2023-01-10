@@ -241,7 +241,7 @@ public class rogueLikeTextRPG {
                             if (random.nextDouble() < probability) {
                               // código com 75% de probabilidade de ser executado
                               System.out.println("Tentaste evitar o combate mas o enimigo apanhou-te!");
-                              player.setLife(player.getLife()-enemy.getPower());
+                              player.setLife(player.getLife()-enemy.getPower()-1);
                               enemy.setPower(0);
                             } else {
                               // código com 25% de probabilidade de ser executado
@@ -262,8 +262,23 @@ public class rogueLikeTextRPG {
                     break;
                 case 'a':
                     if (player.getX() != 0) { //if left exists
-                        player.setX(player.getX()-1);
-                        System.out.println("Moveste-te para a esquerda!");
+                        if (enemyIsAlive) {
+                            if (random.nextDouble() < probability) {
+                              // código com 75% de probabilidade de ser executado
+                              System.out.println("Tentaste evitar o combate mas o enimigo apanhou-te!");
+                              player.setLife(player.getLife()-enemy.getPower()-1);
+                              enemy.setPower(0);
+                            } else {
+                              // código com 25% de probabilidade de ser executado
+                              player.setX(player.getX()-1);
+                              System.out.println("Moveste-te para a esquerda!");
+                            }
+
+                        } else {
+                            player.setX(player.getX()-1);
+                            System.out.println("Moveste-te para a esquerda!");
+                        }
+                        
 
                     } else {
                         turnIsValid = false;
@@ -273,8 +288,23 @@ public class rogueLikeTextRPG {
                     break;
                 case 's':
                     if (player.getY() != mapSize-1) { //if down exists
-                        player.setY(player.getY()+1);
-                        System.out.println("Moveste-te para baixo!");
+                        if (enemyIsAlive) {
+                            if (random.nextDouble() < probability) {
+                              // código com 75% de probabilidade de ser executado
+                              System.out.println("Tentaste evitar o combate mas o enimigo apanhou-te!");
+                              player.setLife(player.getLife()-enemy.getPower()-1);
+                              enemy.setPower(0);
+                            } else {
+                              // código com 25% de probabilidade de ser executado
+                              player.setY(player.getY()+1);
+                            System.out.println("Moveste-te para baixo!");
+                            }
+
+                        } else {
+                            player.setY(player.getY()+1);
+                            System.out.println("Moveste-te para baixo!");
+                        }
+                        
 
                     } else {
                         turnIsValid = false;
@@ -283,8 +313,23 @@ public class rogueLikeTextRPG {
                     break;
                 case 'd':
                     if (player.getX() != mapSize-1) { //if right exists
-                        player.setX(player.getX()+1);
-                        System.out.println("Moveste-te para a direita!");
+                        if (enemyIsAlive) {
+                            if (random.nextDouble() < probability) {
+                              // código com 75% de probabilidade de ser executado
+                              System.out.println("Tentaste evitar o combate mas o enimigo apanhou-te!");
+                              player.setLife(player.getLife()-enemy.getPower()-1);
+                              enemy.setPower(0);
+                            } else {
+                              // código com 25% de probabilidade de ser executado
+                              player.setX(player.getX()+1);
+                                System.out.println("Moveste-te para a direita!");
+                            }
+
+                        } else {
+                            player.setX(player.getX()+1);
+                            System.out.println("Moveste-te para a direita!");
+                        }
+                        
 
                     } else {
                         turnIsValid = false;
@@ -295,6 +340,43 @@ public class rogueLikeTextRPG {
                 if (enemyIsAlive) {
                     player.setPower(player.getPower()+1);
                     System.out.println("Poder evoluido para " + player.getPower() + "!");
+                    if (enemy.getPower()==0) {
+                        if (player.getPower()==0) {
+                            enemy.setPower(enemy.getPower()+1);
+                            System.out.println("O enemigo tambem evoluiu o poder, para " + enemy.getPower() + "!");
+                        } else {
+                            if (random.nextDouble() < 0.5) {
+                                enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo tambem evoluiu o poder, para " + enemy.getPower() + "!");
+                              } else {
+                                  System.out.println("O enemigo bloqueo-te em vão!");
+                              }
+  
+                        }
+                    } else {
+                        if (player.getPower()==0) {
+                            if (random.nextDouble() < 0.5) {
+                                enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo tambem evoluiu o poder, para " + enemy.getPower() + "!");
+                            } else {
+                                System.out.println("O enimigo atacou-te!");
+                                player.setLife(player.getLife()-enemy.getPower()-1);
+                                enemy.setPower(0);
+                            }
+                        } else {
+                            if (random.nextDouble() < 0.33) {
+                                enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo tambem evoluiu o poder, para " + enemy.getPower() + "!");
+                            } else if (random.nextDouble() > 0.66) {
+                                System.out.println("O enimigo atacou-te!");
+                                player.setLife(player.getLife()-enemy.getPower()-1);
+                                enemy.setPower(0);
+                            } else {
+                                System.out.println("O enemigo bloqueo-te em vão!");
+                            }
+                        }
+
+                    }
                 } else {
                     System.out.println("So podes evoluir o poder se estiveres em combate!");
                     turnIsValid = false;
@@ -302,17 +384,89 @@ public class rogueLikeTextRPG {
                 
                     break;
                 case 'e':
-                
-                    break;
+                    if (enemyIsAlive) {
+                        if (enemy.getPower()==0) {
+                            if (player.getPower()==0) {
+                                enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo evoluiu o poder para " + enemy.getPower() + "!");
+                                System.out.println("(Seguido por uma breve risada da tua ignorancia)");
+
+                            } else {
+                                if (random.nextDouble() < 0.5) {
+                                    enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo evoluiu o poder para " + enemy.getPower() + "!");
+                                } else {
+                                    System.out.println("O enemigo bloqueo-te em vão!");
+                                }
+                            }
+                        } else {
+                            if (player.getPower()==0) {
+                                if (random.nextDouble() < 0.5) {
+                                    enemy.setPower(enemy.getPower()+1);
+                                    System.out.println("O enemigo evoluiu o poder para " + enemy.getPower() + "!");
+                                } else {
+                                    System.out.println("O enimigo atacou-te mas tu bloqueaste-o!");
+                                    enemy.setPower(0);
+                                }
+                            } else {
+                                if (random.nextDouble() < 0.33) {
+                                    enemy.setPower(enemy.getPower()+1);
+                                    System.out.println("O enemigo evoluiu o poder para " + enemy.getPower() + "!");
+                                } else if (random.nextDouble() > 0.66) {
+                                    System.out.println("O enimigo atacou-te mas tu bloqueaste-o!");
+                                    enemy.setPower(0);
+                                } else {
+                                    System.out.println("O enemigo bloqueo-te em vão!");
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("Nao tens nada para bloquear!");
+                        turnIsValid = false;
+                    }
+                        break;
                 case 'r':
-                if (enemyIsAlive) {
-                    System.out.println("Atacaste com " + player.getPower() + " de poder!");
-                    enemy.setLife(enemy.getLife() - player.getPower());
-                    player.setPower(0);
-                } else {
-                    System.out.println("Nao tens nada para atacar!");
-                    turnIsValid = false;
-                }
+                    if (player.getPower()==0) {
+                        System.out.println("Nao tens poder para atacar!");
+                        turnIsValid = false;
+                    } else if (enemyIsAlive) {
+                        if (enemy.getPower()==0) {
+                            if (random.nextDouble() < 0.5) {
+                                enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo evoluiu o poder para " + enemy.getPower() + "!");
+                                System.out.println("Atacaste com " + player.getPower() + " de poder!");
+                                enemy.setLife(enemy.getLife() - player.getPower());
+                                player.setPower(0);
+                            } else {
+                                System.out.println("O enemigo bloqueo-te o ataque!");
+                                player.setPower(0);
+                            } 
+                        } else {
+                            if (random.nextDouble() < 0.33) {
+                                enemy.setPower(enemy.getPower()+1);
+                                System.out.println("O enemigo evoluiu o poder para " + enemy.getPower() + "!");
+                                System.out.println("Atacaste com " + player.getPower() + " de poder!");
+                                enemy.setLife(enemy.getLife() - player.getPower());
+                                player.setPower(0);
+                            } else if (random.nextDouble() > 0.66) {
+                                System.out.println("Atacaste com " + player.getPower() + " de poder!");
+                                enemy.setLife(enemy.getLife() - player.getPower());
+                                player.setPower(0);
+                                System.out.println("Mas o enimigo tambem te atacou!");
+                                player.setLife(player.getLife()-enemy.getPower()-1);
+                                enemy.setPower(0);
+                            } else {
+                                System.out.println("O enemigo bloqueo-te o ataque!");
+                                player.setPower(0);
+                            }
+                        }
+
+
+
+                    } else {
+                        System.out.println("Nao tens nada para atacar!");
+                        turnIsValid = false;
+                    }
                     break;
                 case 'f':
                 
