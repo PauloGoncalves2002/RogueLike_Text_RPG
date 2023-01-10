@@ -1,6 +1,7 @@
 package rogueLikeTextRPG;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -8,6 +9,17 @@ import java.util.Random;
  */
 
 public class rogueLikeTextRPG {
+
+    public static Entity getEnemy(int x, int y, ArrayList<Entity> enemies) {
+        for (Entity enemy : enemies) {
+            if (enemy.getX() == x && enemy.getY() == y) {
+                return enemy;
+            }
+        }
+        return null;
+    }
+
+
 
     /**
      * @param args the command line arguments
@@ -87,20 +99,34 @@ public class rogueLikeTextRPG {
         }
 
         //generate enemies
+        ArrayList<Entity> enemies = new ArrayList<>();
+
+        String[] enemyNames = {"Goblin", "Orc", "Troll", "Ogre", "Skeleton", "Zombie", "Mummy", "Vampire", "Werewolf", "Demon", "Dragon", "Giant", "Gargoyle", "Witch", "Warlock", "Necromancer", "Succubus", "Incubus", "Elemental", "Golem", "Hydra", "Kraken", "Medusa", "Minotaur", "Phoenix", "Pegasus", "Unicorn", "Siren", "Mermaid", "Sea Monster", "Sea Serpent", "Leviathan", "Kaiju", "Yokai", "Oni", "Tengu", "Kappa", "Onryo", "Bakemono", "Youkai", "Obake", "Kami", "Akuma", "Shaman", "Wizard", "Sorcerer", "Mage", "Warrior", "Knight", "Paladin", "Ranger", "Thief", "Assassin", "Rogue", "Monk", "Cleric", "Druid", "Bard"};
+
         for (int y = 0; y < mapSize; y++) {
             for (int x = 0; x < mapSize; x++) {
                 if (map[y][x] == 'e') {
-                    String enemyName = "enemy" + y + "." + x;
-                    Entity enemy = new Entity("enemy", enemyName, 0, 1, x, y);
+                    //set name
+                    int index = random.nextInt(enemyNames.length);
+                    String enemyName = enemyNames[index];
+
+                    Entity enemy = new Entity("enemy", enemyName, random.nextInt(2), random.nextInt(3) + 1, x, y);
+                    enemies.add(enemy);
                 }
             }
         }
 
         //find boss and set boss
+        Entity boss = null;
         for (int y = 0; y < mapSize; y++) {
             for (int x = 0; x < mapSize; x++) {
-                if (map[y][x] == 'b')
-                mapV[y][x] = 'b';
+                if (map[y][x] == 'b') {
+                    mapV[y][x] = 'b';
+
+                    boss = new Entity("boss", "Boss", random.nextInt(5), random.nextInt(5) + 6, x, y);
+                        enemies.add(boss);
+                    break;
+                }
             }
         }
 
@@ -151,6 +177,27 @@ public class rogueLikeTextRPG {
 
             //print hud ---------------------------------------
             System.out.println(" ");
+            //print whats happning
+            boolean enemyIsAlive = false;
+            Entity enemy = getEnemy(player.getX(), player.getY(), enemies);
+            if (enemy != null) { //if there is a enemy ...
+                if (enemy.life < 1) { //... but is dead
+                    System.out.println("Esta sala tem um enimigo, mas ja esta morto");
+                } else { //... and is alive
+                    enemyIsAlive = true;
+                    System.out.println("Esta sala tem um enimigo!");
+                    System.out.print("Nome: "+ enemy.getName());
+                    System.out.print(" | Vida: "+ enemy.getLife());
+                    System.out.print(" | Poder: "+ enemy.getPower());
+                    System.out.println(" ");
+
+                }
+                
+            } else {
+                // There is no enemy at the given coordinates
+            }
+
+            System.out.println(" ");
             //print map
             for (int i = 0; i < map.length; i++) {
                 for (int j = 0; j < map[i].length; j++) {
@@ -186,11 +233,27 @@ public class rogueLikeTextRPG {
             action = keyboard.next().charAt(0);
             System.out.println(" ");
             
+            double probability = 0.75; // 75% de probabilidade
             switch (action) {
                 case 'w':
                     if (player.getY() != 0) { //if up exists
-                        player.setY(player.getY()-1);
-                        System.out.println("Moveste-te para cima!");
+                        if (enemyIsAlive) {
+                            if (random.nextDouble() < probability) {
+                              // código com 75% de probabilidade de ser executado
+                              System.out.println("Tentaste evitar o combate mas o enimigo apanhou-te!");
+                              player.setLife(player.getLife()-enemy.getPower());
+                              enemy.setPower(0);
+                            } else {
+                              // código com 25% de probabilidade de ser executado
+                                player.setY(player.getY()-1);
+                                System.out.println("Evitaste o combate e moveste-te para cima!");
+                            }
+
+                        } else {
+                            player.setY(player.getY()-1);
+                            System.out.println("Moveste-te para cima!");
+                        }
+                        
                         
                     } else {
                         turnIsValid = false;
@@ -229,15 +292,27 @@ public class rogueLikeTextRPG {
                     }
                     break;
                 case 'q':
-                player.setPower(player.getPower()+1);
-                System.out.println("Poder evoluido para" + player.getPower() + "!");
+                if (enemyIsAlive) {
+                    player.setPower(player.getPower()+1);
+                    System.out.println("Poder evoluido para " + player.getPower() + "!");
+                } else {
+                    System.out.println("So podes evoluir o poder se estiveres em combate!");
+                    turnIsValid = false;
+                }
+                
                     break;
                 case 'e':
                 
                     break;
                 case 'r':
-                System.out.println("Atacaste com " + player.getPower() + " de poder!");
-                player.setPower(0);;
+                if (enemyIsAlive) {
+                    System.out.println("Atacaste com " + player.getPower() + " de poder!");
+                    enemy.setLife(enemy.getLife() - player.getPower());
+                    player.setPower(0);
+                } else {
+                    System.out.println("Nao tens nada para atacar!");
+                    turnIsValid = false;
+                }
                     break;
                 case 'f':
                 
@@ -254,10 +329,20 @@ public class rogueLikeTextRPG {
 
             if (turnIsValid) turn++;
             System.out.println(" ");
+            
+        } while (player.getLife() > 0 && boss.getLife() > 0);
 
-        } while (true==true); //todo : boss life != 0 or player life != 0 ?????????????????????????
+        keyboard.close();
+            
+        if (boss.getLife() < 1) {
+            System.out.println("Boa, ganhaste, derrotaste o boss!");
+        } else {
+            System.out.println("Perdeste mas nao faz mal, tenta outra vez e talvez diminui o tamanho do mapa se possivel");
+        }
 
-        //todo : win or lose plus stats ????????????????????????????????????????????
+        System.out.println(" ");
+        System.out.println("Este jogo durou um total de " + turn + " turnos!");
+        //todo : more stats
     
     }
 }
