@@ -10,7 +10,7 @@ public class Entity {
 
     //constractors -------------------------------------
      /**
-     * Construtor de criação de instâncias de Automovel
+     * Construtor de criação de instâncias da entidade
      * @param type type of entity (string) (player,enemy,boss,)
      * @param name name of entity (string)
      * @param power power of entity (int)
